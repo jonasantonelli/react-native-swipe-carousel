@@ -1,0 +1,31 @@
+{
+  "name": "react-native-swipe-carousel",
+  "version": "0.1.0",
+  "description": "React Native Component Swipe Carousel",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonasantonelli/react-native-swipe-carousel.git"
+  },
+  "keywords": [
+    "react-native",
+    "carousel",
+    "swipe carousel",
+    "swipe",
+    "react",
+    "component"
+  ],
+  "author": {
+       "name": "Jonas Antonelli (https://github.com/jonasantonelli)",
+       "email": "jonas.antonelli@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jonasantonelli/react-native-swipe-carousel/issues"
+  },
+  "homepage": "https://github.com/jonasantonelli/react-native-swipe-carousel",
+  "dependencies": {
+      "react": "15.2.0",
+      "react-native": "0.28.0"
+  }
+}
