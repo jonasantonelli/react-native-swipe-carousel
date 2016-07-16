@@ -23,9 +23,5 @@
   "bugs": {
     "url": "https://github.com/jonasantonelli/react-native-swipe-carousel/issues"
   },
-  "homepage": "https://github.com/jonasantonelli/react-native-swipe-carousel",
-  "dependencies": {
-      "react": "15.2.0",
-      "react-native": "0.28.0"
-  }
+  "homepage": "https://github.com/jonasantonelli/react-native-swipe-carousel"
 }
