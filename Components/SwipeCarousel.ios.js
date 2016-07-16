@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 
 import {
   AppRegistry,
-  StyleSheet,
   Text,
   View,
   PanResponder,
@@ -16,8 +15,6 @@ import {
   Easing,
   Dimensions
 } from 'react-native';
-
-import Styles from './Style/SwipeCarousel';
 
 const window = Dimensions.get('window');
 const menuWidth = window.width * 0.5;
