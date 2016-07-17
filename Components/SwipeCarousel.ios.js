@@ -202,13 +202,8 @@ class SwipeCarousel extends Component {
                 translateX: translateX
             }],
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#777',
             width: window.width,
             height: window.height,
-            borderColor: '#444',
-            borderLeftWidth: 1,
             position: 'absolute'
         }
      }
