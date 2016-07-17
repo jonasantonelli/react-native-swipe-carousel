@@ -1,4 +1,12 @@
 
+## [v0.1.3]
+> Jul 17, 2016
+
+- Fix style import
+
+[v0.1.3]: https://github.com/jonasantonelli/react-native-swipe-carousel/tree/0.1.3
+
+
 ## [v0.1.2]
 > Jul 16, 2016
 
