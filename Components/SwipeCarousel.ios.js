@@ -19,12 +19,6 @@ import {
 const window = Dimensions.get('window');
 const menuWidth = window.width * 0.5;
 
-const animationConfig = {
-  duration: 200, // milliseconds
-  delay: 0, // milliseconds
-  easing: Easing.out(Easing.ease)
-};
-
 class SwipeCarousel extends Component {
 
 
@@ -44,11 +38,18 @@ class SwipeCarousel extends Component {
         //Position Limit Right
         this._limitRight = 0;
         //Size of drag to change page
-        this._drag = this.props.drag || window.width / 2;
+        this._drag = window.width / 2;
         //Save the previous position
         this._previousPosition = 0;
         //Pan Responser for touch
         this._panResonder = null;
+
+        //Options of animation
+        this._animation = Object.assign({
+          duration: 200, // milliseconds
+          delay: 0, // milliseconds
+          easing: Easing.out(Easing.ease)
+        }, this.props.animation);
 
     }
 
@@ -75,7 +76,7 @@ class SwipeCarousel extends Component {
      */
     setPositionAnimated(position = 0){
         Animated.timing(this.state.pan, {
-          ...animationConfig,
+          ...this._animation,
           toValue: {
             x: position,
             y: 0
@@ -240,11 +241,8 @@ class SwipeCarousel extends Component {
      }
 }
 
-
-//TODO: aplicar a validacao da prop children
 SwipeCarousel.propTypes = {
-    animationConfig: React.PropTypes.object,
-    drag: React.PropTypes.number
+    animation: React.PropTypes.object
 }
 
 export default SwipeCarousel;
