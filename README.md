@@ -25,7 +25,6 @@ import SwipeCarousel from 'react-native-swipe-carousel';
 ### Using
 
 
-First Tab:
 ```js
 
 class Main extends Component {
