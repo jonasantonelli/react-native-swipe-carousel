@@ -3,9 +3,6 @@
 This is a simple Swipe Carousel Component to use in your React Native applications.
 
 
-
-This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
-
 ### Version
 0.1.4
 
