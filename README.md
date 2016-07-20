@@ -36,7 +36,7 @@ class Main extends Component {
     render() {
         return (
           <View>
-              <SwipeCarousel>
+                <SwipeCarousel>
                     <View></View>{ /*Page 1*/ }
                     <View></View>{ /*Page 2*/ }
                     <View></View>{ /*Page 3*/ }
