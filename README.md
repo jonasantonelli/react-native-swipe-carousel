@@ -1,3 +1,56 @@
-# react-native-swipe-carousel
-React Native Component Swipe Carousel
+# React Native Swipe Carousel
 
+This is a simple Swipe Carousel Component to use in your React Native applications.
+
+
+
+This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
+
+### Version
+0.1.4
+
+### Installation
+
+Swipe Carousel requires [React](https://facebook.github.io/react/) v15.2.1+ and [React Native](https://facebook.github.io/react-native/) v.0.29+
+
+How to install using [NPM Repository](https://www.npmjs.com/package/react-native-swipe-carousel):
+
+```sh
+$ npm install react-native-swipe-carousel --save-dev
+```
+
+### Import
+
+```js
+import SwipeCarousel from 'react-native-swipe-carousel';
+```
+
+### Using
+
+
+First Tab:
+```js
+
+class Main extends Component {
+    
+    render() {
+        return (
+          <View>
+              <SwipeCarousel>
+                    <View></View>{ /*Page 1*/ }
+                    <View></View>{ /*Page 2*/ }
+                    <View></View>{ /*Page 3*/ }
+                    { /*...*/ }
+                </SwipeCarousel>
+          </View>
+        );
+    }
+}
+````
+
+
+
+License
+----
+
+MIT
