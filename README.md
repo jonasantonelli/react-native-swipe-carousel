@@ -4,7 +4,7 @@ This is a simple Swipe Carousel Component to use in your React Native applicatio
 
 
 ### Version
-0.1.4
+0.1.5
 
 ### Installation
 
@@ -28,7 +28,7 @@ import SwipeCarousel from 'react-native-swipe-carousel';
 ```js
 
 class Main extends Component {
-    
+
     render() {
         return (
           <View>
