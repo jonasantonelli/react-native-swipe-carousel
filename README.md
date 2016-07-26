@@ -5,7 +5,7 @@ This is a simple Swipe Carousel Component to use in your React Native applicatio
 For IOS
 
 ### Version
-0.1.5
+0.1.6
 
 ### Installation
 

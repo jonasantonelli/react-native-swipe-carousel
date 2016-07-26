@@ -8,8 +8,10 @@ import React, { Component } from 'react';
 
 import {
   AppRegistry,
+  StyleSheet,
   Text,
   View,
+  TouchableHighlight,
   PanResponder,
   Animated,
   Easing,
@@ -19,8 +21,37 @@ import {
 const window = Dimensions.get('window');
 const menuWidth = window.width * 0.5;
 
-class SwipeCarousel extends Component {
 
+
+/**
+ * Styles
+ */
+const IndicatorsStyle = StyleSheet.create({
+    Container: {
+        flex:1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: window.width,
+        height: 3,
+        position: 'absolute',
+        bottom: 20
+    },
+    Item: {
+        borderWidth: 7,
+        borderRadius: 7,
+        marginRight: 5,
+        marginLeft: 5,
+        borderColor: 'rgba(0,0,0,0.4)',
+    },
+    Selected: {
+        borderColor: 'rgba(0,0,0,0.8)'
+    }
+});
+
+
+
+class SwipeCarousel extends Component {
 
     constructor(props){
 
@@ -50,6 +81,9 @@ class SwipeCarousel extends Component {
           delay: 0, // milliseconds
           easing: Easing.out(Easing.ease)
         }, this.props.animation);
+
+        //Indicators true/false
+        this._indicators = (typeof this.props.indicators === 'undefined') ? true : this.props.indicators;
 
     }
 
@@ -110,6 +144,16 @@ class SwipeCarousel extends Component {
         return true
      };
 
+
+     /**
+      * Move to current page and update previous position
+      * @param  {[type]} current = this.state.current [description]
+      */
+     moveTo(current = this.state.current){
+         this._previousPosition = ((current * window.width) - window.width) * -1;
+         this.setPositionAnimated(this._previousPosition);
+     }
+
     /**
      * Callback when star handle touch
      * @param  {[type]} e       [description]
@@ -134,6 +178,7 @@ class SwipeCarousel extends Component {
             thisPage = Math.floor((this._previousPosition + this._drag) / window.width),
             previousPage = this.state.current - 1;
 
+        //If don't change of page yet
         if(thisPage === previousPage){
             if(gesture.dx > this._drag){
                 pageChanged = true;
@@ -168,9 +213,7 @@ class SwipeCarousel extends Component {
             this.setPositionAnimated(this._previousPosition);
         }
 
-        this._previousPosition = ((currentPage * window.width) - window.width) * -1;
-
-        this.setPositionAnimated(this._previousPosition);
+        this.moveTo(currentPage);
 
     }
 
@@ -194,7 +237,12 @@ class SwipeCarousel extends Component {
         this.setPosition(gesture.dx + this._previousPosition);
      };
 
-     setTranslateX(page){
+
+     /**
+      * get style for each page
+      * @param {[type]} page [description]
+      */
+     getPageStyle(page){
 
         let translateX = Math.abs(page ? window.width * (page - 1) : window.width);
 
@@ -203,6 +251,8 @@ class SwipeCarousel extends Component {
                 translateX: translateX
             }],
             flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
             width: window.width,
             height: window.height,
             position: 'absolute'
@@ -210,39 +260,104 @@ class SwipeCarousel extends Component {
      }
 
 
-     renderPage(page, index){
+     /**
+      * Select some page, apply current page
+      * @param  {[type]} index [description]
+      * @return {[type]}       [description]
+      */
+     selectPage(index){
+
+         if(index === this.state.current){
+             return;
+         }
+
+         this.setState({
+            current: index
+         });
+
+         this.moveTo(index);
+     }
+
+
+     /**
+      * Render page <View/>
+      * @param  {[type]} page  [description]
+      * @param  {[type]} index = 1 [description]
+      * @return <View/>
+      */
+     renderPage(page, index = 1){
          return (
-             <View key={index} style={this.setTranslateX(index+1)}>
+             <View key={index} style={this.getPageStyle(index)}>
                  {page}
              </View>
         )
      }
 
+     /**
+      * Render Indicator
+      * @param  {[type]} index = 1 [description]
+      * @return <TouchableHighlight/>
+      */
+     renderIndicator(index = 1){
+
+        let styles = [
+            IndicatorsStyle.Item
+        ];
+
+        if(this.state.current === index){
+            styles.push(IndicatorsStyle.Selected);
+        }
+
+         return (
+             <TouchableHighlight style={styles} key={index} onPress={this.selectPage.bind(this, index)}>
+                 <Text></Text>
+            </TouchableHighlight>
+         )
+     }
+
+
+     indicatorComponent(Indicators){
+         return (<View style={IndicatorsStyle.Container}>{ Indicators }</View>);
+     }
+
+
      render() {
 
-        let Pages;
+        let Pages = [],
+            Indicators = [];
 
         if(this.props.children && this.props.children.length){
-             Pages = this.props.children.map( (page, i) => {
-                return this.renderPage(page, i);
+
+            this.props.children.forEach( (page, i) => {
+
+                let index = i + 1;
+
+                Pages.push(this.renderPage(page, index));
+                Indicators.push(this.renderIndicator(index));
             });
+
         }
         else if( this.props.children ){
-            Pages = this.renderPage(this.props.children, 0);
+             Pages = this.renderPage(this.props.children);
+             Indicators = this.renderIndicator();
         }
 
         return (
-            <View {...this._panResponder.panHandlers} >
-                <Animated.View ref="Swipe" style={{transform:this.state.pan.getTranslateTransform()}} >
-                    { Pages }
-                </Animated.View>
+            <View>
+                <View {...this._panResponder.panHandlers} style={{height: window.height - 2}}>
+                    <Animated.View ref="Swipe" style={{transform:this.state.pan.getTranslateTransform()}} >
+                        { Pages }
+                    </Animated.View>
+                </View>
+                { (this._indicators) ? this.indicatorComponent(Indicators) : null }
             </View>
         );
      }
 }
 
 SwipeCarousel.propTypes = {
-    animation: React.PropTypes.object
+    animation: React.PropTypes.object,
+    indicators: React.PropTypes.bool
 }
 
 export default SwipeCarousel;
