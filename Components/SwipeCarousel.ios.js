@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 
 const window = Dimensions.get('window');
-const menuWidth = window.width * 0.5;
 
 
 
@@ -28,24 +27,25 @@ const menuWidth = window.width * 0.5;
  */
 const IndicatorsStyle = StyleSheet.create({
     Container: {
-        flex:1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        width: window.width,
-        height: 3,
-        position: 'absolute',
-        bottom: 20
+        height: 14,
+        paddingTop: 20,
+        paddingBottom: 20
     },
     Item: {
-        borderWidth: 7,
-        borderRadius: 7,
-        marginRight: 5,
-        marginLeft: 5,
-        borderColor: 'rgba(0,0,0,0.4)',
+        borderWidth:5,
+        borderColor: '#333',
+        borderRadius: 5,
+        marginRight: 6,
+        marginLeft: 6
     },
     Selected: {
-        borderColor: 'rgba(0,0,0,0.8)'
+        width: 10,
+        height: 10,
+        borderWidth: 2,
+        borderRadius: 10
     }
 });
 
@@ -59,7 +59,9 @@ class SwipeCarousel extends Component {
 
         this.state = {
             current: 1, //Current Page
-            pan: new Animated.ValueXY() //Animated started in x:0 y:0
+            pan: new Animated.ValueXY(), //Animated started in x:0 y:0
+            width: 0, //this is width size of swipe element
+            height: 0 //this is height size of swipe element
         }
 
         //Number of pages
@@ -82,8 +84,20 @@ class SwipeCarousel extends Component {
           easing: Easing.out(Easing.ease)
         }, this.props.animation);
 
+        this._style = Object.assign({
+            flex: 1,
+            overflow: 'visible'
+        }, this.props.style);
+
         //Indicators true/false
         this._indicators = (typeof this.props.indicators === 'undefined') ? true : this.props.indicators;
+        this._indicatorsHeight = 40; //Indicators height size
+
+        //This is object to render
+        this._Build = {
+            Pages: null,
+            Indicators: null
+        };
 
     }
 
@@ -244,18 +258,20 @@ class SwipeCarousel extends Component {
       */
      getPageStyle(page){
 
-        let translateX = Math.abs(page ? window.width * (page - 1) : window.width);
+        let translateX = Math.abs(page ? this.state.width * (page - 1) : this.state.width);
+
+        let _height = (this._indicators) ? this.state.height - this._indicatorsHeight : this.state.height;
 
         return {
             transform:[{
                 translateX: translateX
             }],
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: window.width,
-            height: window.height,
-            position: 'absolute'
+            position: 'absolute',
+            left:0,
+            top: 0,
+            width: this.state.width,
+            height: _height,
         }
      }
 
@@ -317,39 +333,81 @@ class SwipeCarousel extends Component {
 
 
      indicatorComponent(Indicators){
-         return (<View style={IndicatorsStyle.Container}>{ Indicators }</View>);
+         //Get width of container
+         //let getWidth = this.props.children > 0 ? this.props.children * 10
+         return (<View style={[IndicatorsStyle.Container]}>{ Indicators }</View>);
      }
 
+     /**
+      * Build pages and indicators
+      * @return {Pages, Indicators}
+      */
+     buildPagesAndIndicators(){
+         let Pages = [],
+             Indicators = [];
 
-     render() {
+         if(this.props.children && this.props.children.length){
+             this.props.children.forEach( (page, i) => {
+                 let index = i + 1;
+                 Pages.push(this.renderPage(page, index));
+                 Indicators.push(this.renderIndicator(index));
+             });
+         }
+         else if( this.props.children ){
+              Pages = this.renderPage(this.props.children);
+              Indicators = this.renderIndicator();
+         }
+         return {
+             Pages,
+             Indicators
+         };
+     }
 
-        let Pages = [],
-            Indicators = [];
-
-        if(this.props.children && this.props.children.length){
-
-            this.props.children.forEach( (page, i) => {
-
-                let index = i + 1;
-
-                Pages.push(this.renderPage(page, index));
-                Indicators.push(this.renderIndicator(index));
-            });
-
+     /**
+      * Get size of SwipeCarousel component
+      * It is used to refer others Views
+      * @param  {[type]} event [description]
+      * @return {[type]}       [description]
+      */
+     getComponentSize(event){
+        if(!event || !event.nativeEvent || !event.nativeEvent.layout){
+             return;
         }
-        else if( this.props.children ){
-             Pages = this.renderPage(this.props.children);
-             Indicators = this.renderIndicator();
-        }
+        this.setState({
+            width: Math.abs(event.nativeEvent.layout.width),
+            height: Math.abs(event.nativeEvent.layout.height)
+        });
+    }
+
+    /**
+     * Get size of View that will be used to Swipe Carousel
+     * @return {[type]} [description]
+     */
+
+
+
+    render() {
+
+        this._Build = this.buildPagesAndIndicators();
+
+        //Get size of View that will be used to Swipe Carousel
+        let Style = StyleSheet.create({
+            Swipe: {
+                width: this.state.width,
+                height: (this._indicators) ? this.state.height - this._indicatorsHeight : this.state.height
+            }
+        });
+
+        let transformPosition = this.state.pan.getTranslateTransform();
 
         return (
-            <View>
-                <View {...this._panResponder.panHandlers} style={{height: window.height - 2}}>
-                    <Animated.View ref="Swipe" style={{transform:this.state.pan.getTranslateTransform()}} >
-                        { Pages }
+            <View onLayout={this.getComponentSize.bind(this)} style={this._style}>
+                <View {...this._panResponder.panHandlers} style={Style.Swipe}>
+                    <Animated.View ref="Swipe" style={[{transform:transformPosition}, Style.Swipe]} >
+                        { this._Build.Pages }
                     </Animated.View>
                 </View>
-                { (this._indicators) ? this.indicatorComponent(Indicators) : null }
+                { (this._indicators) ? this.indicatorComponent(this._Build.Indicators) : null }
             </View>
         );
      }
@@ -357,6 +415,7 @@ class SwipeCarousel extends Component {
 
 SwipeCarousel.propTypes = {
     animation: React.PropTypes.object,
+    style: React.PropTypes.object,
     indicators: React.PropTypes.bool
 }
 

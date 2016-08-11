@@ -1,3 +1,10 @@
+## [v0.1.7]
+> Ago 11, 2016
+
+- README
+
+[v0.1.7]: https://github.com/jonasantonelli/react-native-swipe-carousel/tree/0.1.7
+
 ## [v0.1.6]
 > Jul 26, 2016
 
